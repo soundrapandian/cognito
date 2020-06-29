@@ -1,8 +1,17 @@
 App Client id
 6dgiceasj3t7jof3ahuu7pl5sm
+5ntn9p5je3ths4s1p59pbnc1f3
 
 App Client Secret
 1sno2sh62dvdf2o6jm3je5vc1i5i9e0lih4str1n1rvlmcdbb2og
+kpkd8q7fmu5d9h93ar6ggt6c3qten3v3sl9v4qgmedbamokmoe1
 
 Pool id
 us-east-1_4d7E1DqhQ
+us-east-1_4fsvP2qjv
+
+arn:aws:cognito-idp:us-east-1:386726749336:userpool/us-east-1_4fsvP2qjv
+
+
+
+https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-cross-account-cognito-authorizer.html

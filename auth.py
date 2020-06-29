@@ -1,12 +1,14 @@
 import boto3
+import datetime
+from dateutil.tz import tzlocal
 import botocore.exceptions
 import hmac
 import hashlib
 import base64
 import json
-USER_POOL_ID = 'us-east-1_4d7E1DqhQ'
-CLIENT_ID = '6dgiceasj3t7jof3ahuu7pl5sm'
-CLIENT_SECRET ='1sno2sh62dvdf2o6jm3je5vc1i5i9e0lih4str1n1rvlmcdbb2og'
+USER_POOL_ID = 'us-east-1_4fsvP2qjv'
+CLIENT_ID = '5ntn9p5je3ths4s1p59pbnc1f3'
+CLIENT_SECRET ='kpkd8q7fmu5d9h93ar6ggt6c3qten3v3sl9v4qgmedbamokmoe1'
 def get_secret_hash(username):
   msg = username + CLIENT_ID 
   dig = hmac.new(str(CLIENT_SECRET).encode('utf-8'),
@@ -37,7 +39,8 @@ def initiate_auth(client, username, password):
         return None, e.__str__()
     return resp, None
 def lambda_handler(event, context):
-    client = boto3.client('cognito-idp')
+    session = assumed_role_session('arn:aws:iam::386726749336:role/OrganizationAccountDevAccessRole')
+    client = session.client('cognito-idp')
     for field in ["username", "password"]:
         if event.get(field) is None:
             return  {"error": True, 
@@ -64,8 +67,28 @@ def lambda_handler(event, context):
            "success": False, 
            "data": None, "message": None}
 
+assume_role_cache: dict = {}
+def assumed_role_session(role_arn: str, base_session: botocore.session.Session = None):
+    base_session = base_session or boto3.session.Session()._session
+    fetcher = botocore.credentials.AssumeRoleCredentialFetcher(
+        client_creator = base_session.create_client,
+        source_credentials = base_session.get_credentials(),
+        role_arn = role_arn,
+        extra_args = {
+        #    'RoleSessionName': None # set this if you want something non-default
+        }
+    )
+    creds = botocore.credentials.DeferredRefreshableCredentials(
+        method = 'assume-role',
+        refresh_using = fetcher.fetch_credentials,
+        time_fetcher = lambda: datetime.datetime.now(tzlocal())
+    )
+    botocore_session = botocore.session.Session()
+    botocore_session._credentials = creds
+    return boto3.Session(botocore_session = botocore_session)
+
 if __name__ == '__main__':
-    e = {'username':'spandian', 
+    e = {'username':'spandian1', 
          'password':'P@ss3242'}
     c = None
     print(lambda_handler(e, c))

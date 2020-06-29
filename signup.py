@@ -4,9 +4,9 @@ import hmac
 import hashlib
 import base64
 import json
-USER_POOL_ID = 'us-east-1_4d7E1DqhQ'
-CLIENT_ID = '6dgiceasj3t7jof3ahuu7pl5sm'
-CLIENT_SECRET = '1sno2sh62dvdf2o6jm3je5vc1i5i9e0lih4str1n1rvlmcdbb2og'
+USER_POOL_ID = 'us-east-1_4fsvP2qjv'
+CLIENT_ID = '5ntn9p5je3ths4s1p59pbnc1f3'
+CLIENT_SECRET = 'kpkd8q7fmu5d9h93ar6ggt6c3qten3v3sl9v4qgmedbamokmoe1'
 def get_secret_hash(username):
     msg = username + CLIENT_ID
     dig = hmac.new(str(CLIENT_SECRET).encode('utf-8'), 
